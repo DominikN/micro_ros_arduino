@@ -125,4 +125,36 @@ static inline void set_microros_wifi_transports(char * ssid, char * pass, char *
 
 #endif
 
+#if defined(ESP32) && defined(HUSARNET)
+#include <Arduino.h>
+#include <AsyncTCP.h>
+
+extern "C" bool arduino_husarnet_transport_open(struct uxrCustomTransport * transport);
+extern "C" bool arduino_husarnet_transport_close(struct uxrCustomTransport * transport);
+extern "C" size_t arduino_husarnet_transport_write(struct uxrCustomTransport* transport, const uint8_t * buf, size_t len, uint8_t * err);
+extern "C" size_t arduino_husarnet_transport_read(struct uxrCustomTransport* transport, uint8_t* buf, size_t len, int timeout, uint8_t* err);
+
+struct micro_ros_agent_locator {
+	char* hostname;
+	int port;
+};
+
+static inline void set_microros_husarnet_transports(char * agent_hostname, uint agent_port){
+
+	static struct micro_ros_agent_locator locator;
+	locator.hostname = agent_hostname;
+	locator.port = agent_port;
+
+	rmw_uros_set_custom_transport(
+		false,
+		(void *) &locator,
+		arduino_husarnet_transport_open,
+		arduino_husarnet_transport_close,
+		arduino_husarnet_transport_write,
+		arduino_husarnet_transport_read
+	);
+}
+
+#endif
+
 #endif  // MICRO_ROS_ARDUINO
