@@ -10,18 +10,19 @@ while getopts "p:" o; do
 done
 
 if [ $OPTIND -eq 1 ]; then
-    PLATFORMS+=("opencr1")
-    PLATFORMS+=("teensy4")
-    PLATFORMS+=("teensy32")
-    PLATFORMS+=("teensy35")
-    PLATFORMS+=("teensy36")
-    PLATFORMS+=("cortex_m0")
-    PLATFORMS+=("cortex_m3")
-    PLATFORMS+=("cortex_m4")
-    # PLATFORMS+=("portenta-m4")
-    PLATFORMS+=("portenta-m7")
-    PLATFORMS+=("kakutef7-m7")
+    # PLATFORMS+=("opencr1")
+    # PLATFORMS+=("teensy4")
+    # PLATFORMS+=("teensy32")
+    # PLATFORMS+=("teensy35")
+    # PLATFORMS+=("teensy36")
+    # PLATFORMS+=("cortex_m0")
+    # PLATFORMS+=("cortex_m3")
+    # PLATFORMS+=("cortex_m4")
+    # # PLATFORMS+=("portenta-m4")
+    # PLATFORMS+=("portenta-m7")
+    # PLATFORMS+=("kakutef7-m7")
     PLATFORMS+=("esp32")
+    PLATFORMS+=("esp32_1")
 fi
 
 shift $((OPTIND-1))
@@ -235,11 +236,11 @@ if [[ " ${PLATFORMS[@]} " =~ " kakutef7-m7 " ]]; then
     cp -R firmware/build/libmicroros.a /project/src/cortex-m7/fpv5-sp-d16-hardfp/libmicroros.a
 fi
 
-######## Build for ESP 32  ########
+######## Build for ESP32 v2.*  ########
 if [[ " ${PLATFORMS[@]} " =~ " esp32 " ]]; then
     rm -rf firmware/build
 
-    export TOOLCHAIN_PREFIX=/uros_ws/xtensa-esp32-elf/bin/xtensa-esp32-elf-
+    export TOOLCHAIN_PREFIX=/uros_ws/xtensa-esp32-elf-gcc8_4_0-esp-2021r2/bin/xtensa-esp32-elf-
     ros2 run micro_ros_setup build_firmware.sh /project/extras/library_generation/esp32_toolchain.cmake /project/extras/library_generation/colcon.meta
 
     find firmware/build/include/ -name "*.c"  -delete
@@ -247,6 +248,20 @@ if [[ " ${PLATFORMS[@]} " =~ " esp32 " ]]; then
 
     mkdir -p /project/src/esp32
     cp -R firmware/build/libmicroros.a /project/src/esp32/libmicroros.a
+fi
+
+######## Build for ESP32 v1.*  ########
+if [[ " ${PLATFORMS[@]} " =~ " esp32_1 " ]]; then
+    rm -rf firmware/build
+
+    export TOOLCHAIN_PREFIX=/uros_ws/xtensa-esp32-elf-linux64-1.22/bin/xtensa-esp32-elf-
+    ros2 run micro_ros_setup build_firmware.sh /project/extras/library_generation/esp32_toolchain.cmake /project/extras/library_generation/colcon.meta
+
+    find firmware/build/include/ -name "*.c"  -delete
+    cp -R firmware/build/include/* /project/src/
+
+    mkdir -p /project/src/esp32_1
+    cp -R firmware/build/libmicroros.a /project/src/esp32_1/libmicroros.a
 fi
 
 ######## Generate extra files ########
