@@ -83,7 +83,6 @@ static inline void set_microros_native_ethernet_udp_transports(byte mac[], IPAdd
 
 #if defined(ESP32) && defined(HUSARNET)
 #include <Arduino.h>
-#include <AsyncTCP.h>
 
 extern "C" bool arduino_husarnet_transport_open(struct uxrCustomTransport * transport);
 extern "C" bool arduino_husarnet_transport_close(struct uxrCustomTransport * transport);
