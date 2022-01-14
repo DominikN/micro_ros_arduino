@@ -91,6 +91,7 @@ An example of a micro-ROS application using PlatformIO is available [here](https
 ```bash
 docker pull microros/micro_ros_static_library_builder:galactic
 docker run -it --rm -v $(pwd):/project --env MICROROS_LIBRARY_FOLDER=extras microros/micro_ros_static_library_builder:galactic
+docker run -it --rm -v $(pwd):/project --env MICROROS_LIBRARY_FOLDER=extras micro-ros-lib-builder-local:latest
 ```
 Note that folders added to `extras/library_generation/extra_packages` and entries added to `extras/library_generation/extra_packages/extra_packages.repos` will be taken into account by this build system.
 
