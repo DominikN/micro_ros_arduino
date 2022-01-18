@@ -92,6 +92,7 @@ extern "C" size_t arduino_husarnet_transport_read(struct uxrCustomTransport* tra
 struct micro_ros_agent_locator {
 	char* hostname;
 	int port;
+	IPv6Address addr;
 };
 
 static inline void set_microros_husarnet_transports(char * agent_hostname, uint agent_port){
@@ -99,6 +100,13 @@ static inline void set_microros_husarnet_transports(char * agent_hostname, uint 
 	static struct micro_ros_agent_locator locator;
 	locator.hostname = agent_hostname;
 	locator.port = agent_port;
+
+	for (auto const &host : Husarnet.listPeers()) {
+      if (host.second == locator.hostname) {
+        locator.addr = host.first;
+		break;
+      } 
+    }
 
 	rmw_uros_set_custom_transport(
 		false,
